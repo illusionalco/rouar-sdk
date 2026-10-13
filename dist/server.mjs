@@ -127,6 +127,24 @@ function toProblem(error, instance) {
 	};
 }
 //#endregion
+//#region src/server/event-stream.ts
+/**
+* Flue の SSE の応答に、途中の中継が溜めたり変えたりしないための見出しを付ける。
+* - cache-control: no-store, no-transform。保存させず、圧縮などで本文を変えさせない。
+*   圧縮する中継は、まとまった量になるまで本文を溜めることがあり、出来事と注釈が遅れる
+* - x-accel-buffering: no。nginx の形の中継に、本文を溜めずに流させる
+*/
+function isEventStream(headers) {
+	return (headers.get("content-type") ?? "").toLowerCase().startsWith("text/event-stream");
+}
+function withEventStreamHeaders(response) {
+	if (!isEventStream(response.headers)) return response;
+	const next = new Response(response.body, response);
+	next.headers.set("cache-control", "no-store, no-transform");
+	next.headers.set("x-accel-buffering", "no");
+	return next;
+}
+//#endregion
 //#region src/server/edge.ts
 /**
 * 入口が付けるトークンのヘッダー。apps/edge の EDGE_TOKEN_HEADER と同じ名前にする。
@@ -342,7 +360,8 @@ function healthResponse(method) {
 * admitFromEdge が undefined を返した要求は入口を通っていないので 404 にし、
 * 返した要求を先へ渡す。createEdgeAdmission がトークンのヘッダーを外し、URL を利用者側のものに直す。
 * アクセスの検査で断った要求は、browser があれば許可の関数で確かめ直す。
-* onAdmitted は検査を通った要求でだけ呼ぶ。ヘルスチェックと拒んだ要求では呼ばない
+* onAdmitted は検査を通った要求でだけ呼ぶ。ヘルスチェックと拒んだ要求では呼ばない。
+* Flue の SSE の応答には、途中の中継が溜めたり変えたりしない見出しを付ける
 */
 function createRouarFetch(appFetch, gate, onAdmitted, admitFromEdge = withoutEdgeToken, browser) {
 	return async (incoming, bindings) => {
@@ -354,7 +373,7 @@ function createRouarFetch(appFetch, gate, onAdmitted, admitFromEdge = withoutEdg
 		const denied = gate(request);
 		if (!denied) {
 			onAdmitted?.(request, bindings);
-			return appFetch(request, bindings);
+			return withEventStreamHeaders(await appFetch(request, bindings));
 		}
 		if (!browser) return denied;
 		const browserAdmission = await browser.admit(request, nodeContext(bindings));
@@ -539,13 +558,6 @@ function createSendLimiter(limits, now = Date.now) {
 		environment.count += 1;
 	};
 }
-/** SSE の応答をキャッシュさせない */
-function noStoreStream(response) {
-	if (!(response.headers.get("content-type") ?? "").toLowerCase().startsWith("text/event-stream")) return response;
-	const next = new Response(response.body, response);
-	next.headers.set("cache-control", "no-store");
-	return next;
-}
 /** 本文を持たない写し。許可の関数に本文を読ませない */
 function withoutBody(request) {
 	return new Request(request.url, {
@@ -589,7 +601,7 @@ function createBrowserAccess(options) {
 			}
 			return {
 				request: scoped,
-				finish: noStoreStream
+				finish: withEventStreamHeaders
 			};
 		},
 		scope(request, principal) {

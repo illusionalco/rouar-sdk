@@ -400,6 +400,7 @@ const input = ref('');
 - `conversationId` can be a string, a ref, or a getter; when it changes, the previous conversation is closed and the new one is opened. Without it, a random id is created in the browser and kept in `sessionStorage` for the tab.
 - The result has `messages`, `status`, `historyReady`, `error`, `failedSends`, `settlements`, `sendMessage`, and `refresh`, like `@flue/react`, plus `abort` and `url`. Read them as `agent.messages`; destructuring loses reactivity.
 - Nothing is fetched during server-side rendering. In a component, the conversation opens after the component is mounted, and it closes when the component's scope is disposed.
+- The client recovers from stalled live connections. If a sent message is not echoed back within 5 seconds, it reloads the history and reconnects, retrying up to 3 times with a doubling wait. If a live update stream receives nothing, not even a heartbeat, for 45 seconds, it is closed and reopened. `createAgentSession` takes `echoTimeoutMs` and `streamIdleTimeoutMs` to change these waits; `0` turns them off.
 
 ### Nuxt
 

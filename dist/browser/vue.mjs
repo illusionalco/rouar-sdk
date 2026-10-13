@@ -1,4 +1,4 @@
-import { i as createAgentSession, l as emptyAgentSnapshot, n as agentConversationUrl, o as isBrowser, s as rememberedConversationId } from "./client-uAhJJ7LP.mjs";
+import { i as createAgentSession, n as agentConversationUrl, o as isBrowser, p as emptyAgentSnapshot, s as rememberedConversationId } from "./client-C1rx7dna.mjs";
 import { getCurrentInstance, getCurrentScope, onMounted, onScopeDispose, shallowRef, toValue, watch } from "vue";
 //#region src/vue.ts
 /**
