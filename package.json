@@ -1,0 +1,158 @@
+{
+  "name": "@rouar/sdk",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "rouar hooks for Flue agents and the rouar CLI",
+  "keywords": [
+    "rouar",
+    "flue",
+    "agents",
+    "ai-agents",
+    "vm",
+    "sandbox",
+    "cli"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./server": {
+      "types": "./dist/server.d.mts",
+      "default": "./dist/server.mjs"
+    },
+    "./db": {
+      "types": "./dist/db.d.mts",
+      "default": "./dist/db.mjs"
+    },
+    "./access": {
+      "types": "./dist/access.d.mts",
+      "default": "./dist/access.mjs"
+    },
+    "./config": {
+      "types": "./dist/config.d.mts",
+      "default": "./dist/config.mjs"
+    },
+    "./rouar.schema.json": "./rouar.schema.json",
+    "./client": {
+      "types": "./dist/browser/client.d.mts",
+      "default": "./dist/browser/client.mjs"
+    },
+    "./vue": {
+      "types": "./dist/browser/vue.d.mts",
+      "default": "./dist/browser/vue.mjs"
+    },
+    "./nuxt": {
+      "types": "./dist/nuxt.d.mts",
+      "default": "./dist/nuxt.mjs"
+    },
+    "./nuxt/runtime": {
+      "types": "./dist/nuxt-runtime.d.mts",
+      "default": "./dist/nuxt-runtime.mjs"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.mts",
+      "default": "./dist/vite.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "rouar": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "rouar.schema.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.19"
+  },
+  "devDependencies": {
+    "@daytona/sdk": "^0.223.1",
+    "@flue/runtime": "^2.2.2",
+    "@flue/sdk": "^2.2.2",
+    "@types/pg": "^8.23.1",
+    "h3": "^1.15.11",
+    "tsdown": "^0.23.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3",
+    "vue": "^3.5.43",
+    "@rouar/env": "1.0.0",
+    "@rouar/log": "1.0.0",
+    "@rouar/tsconfig": "1.0.0",
+    "@rouar/error": "1.0.0"
+  },
+  "peerDependencies": {
+    "@flue/runtime": "^2.2.2",
+    "@flue/sdk": "^2.2.2",
+    "h3": "^1.10.0",
+    "vite": ">=5.0.0",
+    "vue": "^3.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@flue/runtime": {
+      "optional": true
+    },
+    "@flue/sdk": {
+      "optional": true
+    },
+    "h3": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1149.0",
+    "@aws-sdk/lib-storage": "^3.1149.0",
+    "@earendil-works/pi-ai": "^0.87.1",
+    "@flue/postgres": "^2.2.2",
+    "@hono/node-server": "^2.1.4",
+    "@iarna/toml": "^2.2.5",
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.222.0",
+    "@opentelemetry/instrumentation-http": "^0.222.0",
+    "@opentelemetry/otlp-exporter-base": "0.222.0",
+    "@opentelemetry/resources": "2.11.0",
+    "@opentelemetry/sdk-node": "^0.222.0",
+    "@opentelemetry/sdk-trace-base": "^2.12.0",
+    "@opentelemetry/semantic-conventions": "^1.43.0",
+    "@t3-oss/env-core": "^0.13.11",
+    "axios": "^1.20.0",
+    "busboy": "^1.6.0",
+    "citty": "^0.2.2",
+    "expand-tilde": "^2.0.2",
+    "fast-glob": "^3.3.3",
+    "form-data": "^4.0.6",
+    "isomorphic-ws": "^5.0.0",
+    "pathe": "^2.0.3",
+    "pg": "^8.23.1",
+    "pino": "^10.4.0",
+    "shell-quote": "^1.12.0",
+    "socket.io-client": "^4.8.4",
+    "tar": "^7.5.22",
+    "tslib": "2.8.1",
+    "ws": "^8.22.0",
+    "zod": "^4.6.5"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/illusionalco/rouar.git",
+    "directory": "apps/sdk"
+  },
+  "scripts": {
+    "build": "tsdown && node scripts/check-browser.mjs",
+    "dev": "tsdown --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run"
+  }
+}

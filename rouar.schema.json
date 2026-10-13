@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "routes": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^\\/[^?#\\s]*$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "frontend": {
+      "anyOf": [
+        {
+          "type": "boolean",
+          "const": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "root": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "framework": {
+              "type": "string",
+              "enum": ["nuxt", "vue-vite", "sveltekit", "react-vite"]
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["ssr", "static"]
+            },
+            "buildCommand": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "outputDir": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "title": "rouar.json",
+  "description": "Configuration for deploying a project on Rouar"
+}

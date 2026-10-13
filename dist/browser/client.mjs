@@ -1,0 +1,1 @@
+export { c as AgentSession, t as DEFAULT_AGENT_ROUTE, n as agentConversationUrl, r as configureAgentClient, i as createAgentSession, l as emptyAgentSnapshot, a as getAgentRoute, o as isBrowser, s as rememberedConversationId } from "./client-uAhJJ7LP.mjs";

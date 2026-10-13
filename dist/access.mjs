@@ -1,0 +1,1 @@
+export { t as PRINCIPAL_HEADER, n as agentFetch, r as allowBrowserAgents, i as getBrowserAuthorize, a as isValidPrincipal, o as registerInProcessAgentFetch, s as resetBrowserAgentsForTests } from "./access-C8tGVOdd.mjs";

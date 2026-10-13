@@ -1,0 +1,1 @@
+{"version":3,"file":"nuxt-runtime.d.mts","names":[],"sources":["../src/nuxt-runtime.ts"],"mappings":";;;;;YAgBY,kBACX,OAAO,YAEL,sCAGA,QAAQ;;wBAGK,qBACf,WAAW,iBACT;KAIE,eAAe,KAAK,iBAAiB,KAAK,mBAAmB;;;;;wBAalD,mBACf,WAAW,gBACX,aAAa,cACX;;wBAca,sBACf,WAAW,gBACX,aAAa;KAKT,gBACJ,OAAO,SACP,gBACA;EAAW,SAAS;MAChB;YAEO;;EAEX;EACA,YAAY;EACZ,cAAc;;;;;;;wBAcO,sBACrB,OAAO,SACP,SAAS,uBACP"}
