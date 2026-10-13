@@ -1,6 +1,6 @@
 # @rouar/sdk
 
-rouar hooks for Flue agents and the `rouar` CLI. The package contains the hooks your agent calls, the server entry that rouar starts your agent with, and the `rouar` command-line tool.
+rouar hooks for Flue agents. The package contains the hooks your agent calls and the server entry that rouar starts your agent with. The `rouar` command-line tool is a separate package, [`@rouar/cli`](https://www.npmjs.com/package/@rouar/cli).
 
 Requires Node.js 22.19 or later and `@flue/runtime` 2.2.
 
@@ -58,7 +58,7 @@ Bare provider ids such as `anthropic/...` are not routed through rouar. Usage co
 
 ## Database
 
-Before each build, rouar runs `rouar prepare`. If your Flue source root has no `db.ts`, it creates one with the following content, so conversations and accepted work are stored in your environment's Postgres database.
+Before each build, rouar runs a prepare step from this package. If your Flue source root has no `db.ts`, it creates one with the following content, so conversations and accepted work are stored in your environment's Postgres database.
 
 ```ts
 export { default } from '@rouar/sdk/db';
@@ -137,9 +137,9 @@ rouar can find both packages on its own, but writing them down keeps the build f
 Run these commands at the repository root. The first time, sign in and link the repository to your rouar project.
 
 ```sh
-npx -p @rouar/sdk rouar login
-npx -p @rouar/sdk rouar link
-npx -p @rouar/sdk rouar sdk add
+npx @rouar/cli login
+npx @rouar/cli link
+npx @rouar/cli sdk add
 pnpm --filter ./apps/nuxt add @flue/sdk@^2.2
 pnpm install
 ```
@@ -224,7 +224,7 @@ During the frontend build, only variables whose names start with `NUXT_PUBLIC_`,
 Run the agent and the frontend side by side. Write the development environment variables to the agent's `.env` first:
 
 ```sh
-npx -p @rouar/sdk rouar env pull --file apps/flue/.env
+npx @rouar/cli env pull --file apps/flue/.env
 ```
 
 ```sh
@@ -439,24 +439,9 @@ export default defineConfig({ plugins: [vue(), rouar()] });
 
 ## CLI
 
-| Command | Description |
-|---|---|
-| `rouar login` | Sign in through your browser and store an API key in `~/.config/rouar/auth.json` |
-| `rouar logout` | Revoke the stored API key on the server, then delete the file |
-| `rouar link [--project <id or slug>]` | Link this directory to a rouar project. Without `--project`, the project is found from the git `origin` |
-| `rouar env pull [--project <id or slug>] [--environment development] [--file .env] [--yes]` | Write the development environment variables to `.env`. Without `--project`, the linked project is used. An existing file with different content is overwritten only with `--yes` |
-| `rouar sdk add [--cwd .]` | Download the latest `@rouar/sdk` tarball to `.rouar/` at the repository root and add `"@rouar/sdk": "file:..."` to your agent and frontend packages |
-| `rouar prepare [--cwd .]` | Create `db.ts` before a build. rouar's build runs it |
+The `rouar` command moved to its own package, [`@rouar/cli`](https://www.npmjs.com/package/@rouar/cli), so the SDK installed in your app no longer carries the CLI and its dependencies. Replace `npx -p @rouar/sdk rouar <command>` with `npx @rouar/cli <command>`. The commands and options are the same.
 
-`rouar env pull` can read only the development environment. Preview and production values never leave rouar. The pulled values include `ROUAR_GATEWAY_URL` and a `ROUAR_TOKEN` for the development environment, so models work locally. Each pull issues a new token and revokes the one from the previous pull, so the existing `.env` always differs and is overwritten only with `--yes`.
-
-Set `ROUAR_API_URL` to use a different API. The default is `https://api.rouar.com`.
-
-`rouar login` shows the approval URL only when it has the same origin as the API or the console. The console defaults to `https://console.rouar.com` and can be changed with `ROUAR_CONSOLE_URL`.
-
-`rouar sdk add` uses the stored API key, checks the tarball against the size and SHA-512 integrity returned by the API, and removes older `rouar-sdk-*.tgz` files from `.rouar/`. It picks the packages from `agent.root` and `frontend.root` in `rouar.json`, otherwise from your workspace: the package that depends on `@flue/vite`, packages that use Nuxt, SvelteKit, or Vue or React with Vite, and packages that already depend on `@rouar/sdk`. It works with pnpm, npm, yarn, and bun workspaces. Commit the tarball with your `package.json` changes so collaborators can install without an API key. If `.gitignore` ignores the whole `.rouar/` directory, the command changes it to `/.rouar/*` and adds `!/.rouar/rouar-sdk-*.tgz`. Run your package manager's install afterwards.
-
-`rouar link` stops without writing if `.gitignore`, `.rouar`, or `.rouar/project.json` is a symbolic link.
+rouar's build still prepares your project with this package, so you do not need `@rouar/cli` in your dependencies to deploy.
 
 ## License
 
